@@ -1,0 +1,36 @@
+FUNCTION_BLOCK analise	// Block definition (there may be more than one block per file)
+
+VAR_INPUT
+	distance : REAL;
+END_VAR
+
+VAR_OUTPUT
+	velocity : REAL;
+END_VAR
+
+FUZZIFY distance
+	TERM pequena := (5,0) (20,1) (50, 0) ;
+	TERM media := (30, 0) (50,1) (70,0);
+	TERM grande := (60, 0) (100, 1) (200,1);
+END_FUZZIFY
+
+
+DEFUZZIFY velocity
+	TERM lenta := (50,1) (100,1) (150,0);
+	TERM normal := (75,0) (125,1) (180,0);
+	TERM rapida := (150,0) (200,1) (255,1);
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+	AND : MIN;
+	ACT : MIN;
+	ACCU : MAX;
+
+	RULE 1 : IF distance IS pequena THEN velocity IS lenta;
+	RULE 2 : IF distance IS media THEN velocity IS normal;
+	RULE 3 : IF distance IS grande THEN velocity IS rapida;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
